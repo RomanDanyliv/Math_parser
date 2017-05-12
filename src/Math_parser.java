@@ -240,9 +240,9 @@ public class Math_parser {
                 str1 = Evaluate_operation(str1, operation[k]);
             str =  new StringBuilder(str).replace(pos2, pos2+Replace_length+Brackets, str1).toString();
             str=Remove_symbols(str);
-        for (char symbol:str.toCharArray())
+        for (int c=1;c<str.length();c++)
         {
-            if (Operations.contains(String.valueOf(symbol)))
+            if (Operations.contains(String.valueOf(str.toCharArray()[c])))
             {
                 if (str.toCharArray()[0]!='(' && str.toCharArray()[str.length()-1]!=')')
                 str=Open_brackets("("+str+")",Operations_array);
