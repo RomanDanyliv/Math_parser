@@ -1,9 +1,13 @@
+import com.sun.org.apache.regexp.internal.RE;
+import javafx.application.Application;
+
 import java.util.Scanner;
 
 public class Math_parser {
 
     private static String[] Functions_array = {"ABS", "SQRT", "SQR", "EBP", "LN", "ARCSIN", "ARCCOS", "SIN", "COS", "ARCTAN", "COTAN", "TAN", "LG"};
     private static char[] Operations_array = {'^', '/', '*', '+', '-'};
+    private static int Degrees_or_radian = 0;
 
     public static void main(String[] args) {
         System.out.println("Print 'exit' to exit program");
@@ -12,8 +16,18 @@ public class Math_parser {
             System.out.println("------------------------------------------------------------------------");
             System.out.println("Введiть вираз");
             String expresssion = scan.next();
-            if (expresssion == "exit")
-                break;
+            if (expresssion.equals("exit"))
+                System.exit(0);
+            if (expresssion.equals("set_deg")) {
+                System.out.println("Градуси");
+                Degrees_or_radian = 0;
+                continue;
+            }
+            if (expresssion.equals("set_rad")) {
+                System.out.println("Радіани");
+                Degrees_or_radian = 1;
+                continue;
+            }
             try {
                 if (expresssion.toUpperCase().indexOf("X") < 0)
                     System.out.println(Evaluate(expresssion, 0));
@@ -111,8 +125,7 @@ public class Math_parser {
     static String Evaluate_operation(String str, char action) throws Exception {
         str = Remove_symbols(str);
         int Str_lenght = str.length() - 1;
-        if (str.indexOf("E")>-1)
-        {
+        if (str.indexOf("E") > -1) {
             throw new TooMuchNumbers();
         }
         for (int i = Str_lenght; i >= 0; i--) {
@@ -284,52 +297,61 @@ public class Math_parser {
                         str1 = Evaluate_functions(str1, func, operation);
                 }
                 str1 = Open_brackets(str1, operation);
+                float Returned_value = Float.parseFloat(str1);
+
+                if (Degrees_or_radian == 0 && (k>4 && k<12)) {
+                    Returned_value = (float) Math.toRadians(Returned_value);
+                }
                 try {
                     switch (k) {
                         case 0:
-                            value = Math.abs(Float.parseFloat(str1));
+                            value = Math.abs(Returned_value);
                             break;
                         case 1:
-                            value = Math.sqrt(Float.parseFloat(str1));
+                            value = Math.sqrt(Returned_value);
                             break;
                         case 2:
-                            value = Math.pow(Float.parseFloat(str1), 2);
+                            value = Math.pow(Returned_value, 2);
                             break;
                         case 3:
-                            value = Math.exp(Float.parseFloat(str1));
+                            value = Math.exp(Returned_value);
                             break;
                         case 4:
-                            value = Math.log(Float.parseFloat(str1));
+                            value = Math.log(Returned_value);
                             break;
                         case 5:
-                            value = Math.asin(Float.parseFloat(str1));
+                            value = Math.asin(Returned_value);
                             break;
                         case 6:
-                            value = Math.acos(Float.parseFloat(str1));
+                            value = Math.acos(Returned_value);
                             break;
                         case 7:
-                            value = Math.sin(Float.parseFloat(str1));
+                            value = Math.sin(Returned_value);
                             break;
                         case 8:
-                            value = Math.cos(Float.parseFloat(str1));
+                            value = Math.cos(Returned_value);
                             break;
                         case 9:
-                            value = Math.tan(Float.parseFloat(str1));
+                            value = Math.tan(Returned_value);
                             break;
                         case 10:
-                            if (Float.parseFloat(str1) != 0)
-                                value = Math.atan(Float.parseFloat(str1));
+                            if (Returned_value != 0)
+                                value = Math.atan(Returned_value);
                             break;
                         case 11:
-                            if (Float.parseFloat(str1) != 0)
-                                value = Math.tan(Float.parseFloat(str1));
+                            if (Returned_value != 0)
+                                value = Math.tan(Returned_value);
                             break;
                         case 12:
-                            value = Math.log10(Float.parseFloat(str1));
+                            value = Math.log10(Returned_value);
                             break;
                     }
                 } catch (Exception e) {
                 }
+//                if (Degrees_or_radian==0)
+//                {
+//                    value=Math.toDegrees(value);
+//                }
                 for (i = 1; i < String.valueOf(value).length() - 1; i++) {
                     fl_pos = 0;
                     fl_pos = new StringBuilder(String.valueOf(value)).indexOf("E-");
